@@ -1,0 +1,20 @@
+name: mirror-espn
+on:
+  schedule:
+    - cron: '55 5 * * *'
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -sf 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard' > scoreboard.json
+      - run: |
+          git config user.email "actions@github.com"
+          git config user.name "github-actions"
+          git add scoreboard.json
+          git diff --staged --quiet || git commit -m "mirror $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
