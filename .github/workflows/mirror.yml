@@ -11,7 +11,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: curl -sf 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard' > scoreboard.json
+      - run: curl -sf 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260628-20260719' > scoreboard.json
       - run: |
           git config user.email "actions@github.com"
           git config user.name "github-actions"
