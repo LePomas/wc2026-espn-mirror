@@ -1,10 +1,10 @@
 # wc2026-espn-mirror
 
-Daily mirror of the ESPN hidden API scoreboard for World Cup 2026, committed as JSON so Claude Code Remote (CCR) agents can read it via `raw.githubusercontent.com` (ESPN itself is blocked by the CCR proxy).
+Mirror of the ESPN hidden API scoreboard for World Cup 2026, committed as JSON so Claude Code Remote (CCR) agents can read it via `raw.githubusercontent.com` (ESPN itself is blocked by the CCR proxy).
 
 ## How it works
 
-A GitHub Actions workflow runs at **05:55 UTC** every day, fetches the ESPN scoreboard, and commits `scoreboard.json` if the data changed. The Claude cloud trigger that pushes confirmed knockout matches to Google Calendar runs at **05:59 UTC** and reads this file as its primary source, falling back to [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) if the mirror is stale.
+A GitHub Actions workflow runs **every 15 minutes, all day**, fetches the ESPN scoreboard, and commits `scoreboard.json` if the data changed. This keeps the mirror fresh close to when a scheduled match actually ends (full time / after penalties), not just once a day. The Claude cloud trigger that pushes confirmed knockout matches to Google Calendar runs **hourly** and reads this file as its primary source, falling back to [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json) if the mirror is stale. Together this means newly confirmed matches get pushed to Calendar the same day, not the next morning.
 
 ## Endpoints
 
@@ -20,6 +20,6 @@ Confirmed teams live at `competitions[].competitors[].team.displayName`. A slot 
 
 ## Schedule
 
-- Mirror runs: `55 5 * * *` (05:55 UTC)
-- Consumer trigger: `59 5 * * *` (05:59 UTC)
+- Mirror runs: `*/15 * * * *` (every 15 min, all day)
+- Consumer trigger: hourly (Calendar-push cloud routine)
 - Tournament ends: 2026-07-19
